@@ -1,0 +1,21 @@
+{
+    "name": "feelity/slack-notifier-bundle",
+    "description": "Bundle catching internal server error 500, and sending a message on Slack Infogerence",
+    "type": "symfony-bundle",
+    "require": {
+        "php": ">=7.4",
+        "symfony/framework-bundle": "^5.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "Feelity\\SlackNotifierBundle\\": "src/"
+        }
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Aurelien Piquet",
+            "email": "apiquet@feelity.fr"
+        }
+    ]
+}

@@ -1,0 +1,31 @@
+parameters:
+  slack.uri: '%env(SLACK_NOTIFIER_URI)%'
+  slack.project: '%env(SLACK_NOTIFIER_NAME)%'
+
+services:
+  feelity_slack_notifier.http_exception:
+    class: Feelity\SlackNotifierBundle\EventSubscriber\SlackExceptionHttpSubscriber
+    tags:
+      - { name: kernel.event_listener, event: kernel.exception }
+    arguments:
+      - '@feelity_slack_notifier.manager'
+
+  feelity_slack_notifier.command_exception:
+    class: Feelity\SlackNotifierBundle\EventSubscriber\SlackExceptionConsoleSubscriber
+    tags:
+      - { name: kernel.event_listener, event: console.error }
+    arguments:
+      - '@feelity_slack_notifier.manager'
+
+  feelity_slack_notifier.service:
+    class: Feelity\SlackNotifierBundle\Service\SlackService
+    arguments:
+      $uri: '%slack.uri%'
+      $project: '%slack.project%'
+
+  feelity_slack_notifier.manager:
+    class: Feelity\SlackNotifierBundle\Manager\SlackManager
+    arguments:
+    - '@feelity_slack_notifier.service'
+
+

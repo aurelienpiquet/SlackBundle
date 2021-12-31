@@ -3,7 +3,9 @@
 
 namespace Feelity\SlackNotifierBundle\EventSubscriber;
 
+use Error;
 use Feelity\SlackNotifierBundle\Manager\SlackManager;
+use Symfony\Component\ErrorHandler\Error\UndefinedMethodError;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\Exception\NotAcceptableHttpException;
@@ -23,7 +25,6 @@ class SlackExceptionHttpSubscriber implements EventSubscriberInterface
             KernelEvents::EXCEPTION => [
                 ['onKernelException', 0],
             ],
-
         ];
     }
 
@@ -34,10 +35,19 @@ class SlackExceptionHttpSubscriber implements EventSubscriberInterface
         if ($exception instanceof HttpExceptionInterface || $exception instanceof NotAcceptableHttpException) {
             if ($exception->getStatusCode() === 500) {
                 $this->slackManager->createHttpResponse($event);
-
             }
-        } elseif ($exception->getCode() === 0) {
-            $this->slackManager->createHttpResponse($event);
+        }
+
+        elseif ($exception->getCode() === 0) {
+            try {
+                $exception->getStatusCode();
+            } catch (Error) {
+                $this->slackManager->createHttpResponse($event);
+            }
+
+            /**
+             if (!$exception->getStatusCode()) {}
+             **/
         }
     }
 }

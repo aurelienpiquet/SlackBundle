@@ -28,15 +28,16 @@ class SlackExceptionConsoleSubscriber implements EventSubscriberInterface
     public function onConsoleError(ConsoleErrorEvent $event)
     {
         $exception = $event->getError();
-        try {
-            if ($exception->getCode() === 0) {
+        if ($exception->getCode() === 0) {
+
+            try {
+                $exception->getStatusCode();
+
+            } catch (Error) {
                 $this->slackManager->createCommandResponse($event, $exception);
             }
-        } catch (Error) {
         }
     }
-
-
 }
 
 
